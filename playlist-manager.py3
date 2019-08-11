@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
+import os
+from os import path
 import paramiko
 import xml.etree.ElementTree as ET
 
 hostname = "192.168.1.15"
 user = "pi"
 sshkey = "/home/kwyxz/.ssh/id_rsa_kwyxz_4096b"
-path = "/home/pi/RetroPie/roms"
+rompath = "/home/pi/RetroPie/roms"
 local_playlist = "./Picade.txt"
 remote_playlist = "/home/pi/.attract/romlists/Picade.txt"
 
@@ -18,20 +20,27 @@ def listgames(hostname,user,sshkey,path):
     games = []
     sshcon = paramiko.SSHClient()
     sshcon.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    sshcon.connect(hostname, username=user, key_filename=sshkey)
-    command = 'cd ' + path + ' && find . -name "*.zip"'
-    (stdin, stdout, stderr) = sshcon.exec_command(command)
-    for line in stdout.readlines():
-        games.append(line.split('\n')[0])
-    sshcon.close()
-    return games
+    try:
+        sshcon.connect(hostname, username=user, key_filename=sshkey)
+        command = 'cd ' + path + ' && find . -name "*.zip"'
+        (stdin, stdout, stderr) = sshcon.exec_command(command)
+        for line in stdout.readlines():
+            games.append(line.split('\n')[0])
+        sshcon.close()
+        return games
+    except paramiko.ssh_exception.NoValidConnectionsError:
+        die("Unable to connect to the remote host, check the network parameters")
 
 def retrievepl(hostname,user,sshkey,path):
     sshcon = paramiko.SSHClient()
     sshcon.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     sshcon.connect(hostname, username=user, key_filename=sshkey)
     sftp=sshcon.open_sftp()
-    sftp.get(remote_playlist,local_playlist)
+    try:
+        sftp.get(remote_playlist,local_playlist)
+        print("No local playlist found, remote playlist downloaded...")
+    except FileNotFoundError:
+        print("No local or remote playlist found, creating new one...")
     sftp.close()
     sshcon.close()
 
@@ -47,16 +56,12 @@ def category(name):
 
 def is_present(rom,romlist):
     result = False
-    try:
-        with open(romlist,'r') as f:
-            lines = f.readlines()
-        for line in lines:
-            if rom + ";" in line:
-                result = True
-                break
-    except FileNotFoundError:
-        retrievepl(hostname,user,sshkey,path)
-        result = is_present(rom,romlist)
+    with open(romlist,'r') as f:
+        lines = f.readlines()
+    for line in lines:
+        if rom + ";" in line:
+            result = True
+            break
     return result
 
 def strip_title(absrom):
@@ -118,9 +123,14 @@ def add_line(filename):
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + game_meta(gamename,root,nodename,'manufacturer') + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'display','rotate') + ';' + game_meta_misc(gamename,root,nodename,'control','type') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'control','buttons') + '\n')
 
 # main loop
-roms = listgames(hostname,user,sshkey,path)
+roms = listgames(hostname,user,sshkey,rompath)
+if path.exists(local_playlist):
+    print("Local playlist found, updating local playlist...")
+else:
+    retrievepl(hostname,user,sshkey,remote_playlist)
 for rom in roms:
     if not is_present(strip_title(rom),local_playlist):
         add_line(rom)
 
+print("The playlist is now up-to-date.")
 exit(0)
