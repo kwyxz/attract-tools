@@ -13,8 +13,10 @@ rompath = "/home/pi/RetroPie/roms"
 local_playlist = "./Picade.txt"
 remote_playlist = "/home/pi/.attract/romlists/Picade.txt"
 
+biosfiles = ['neogeo','cpzn1','cpzn2']
+
 def die(message):
-    print("ERROR: " + message)
+    print("\u001b[31mERROR:\u001b[0m " + message)
     exit(1)
 
 def listgames(hostname,user,sshkey,path):
@@ -82,6 +84,9 @@ def is_present(rom,romlist):
         if rom + ";" in line:
             result = True
             break
+        elif rom in biosfiles:
+            result = True
+            break
     return result
 
 def strip_title(absrom):
@@ -103,7 +108,7 @@ def game_meta(name,root,node,meta):
         xpath = "./" + node + "[@name='" + name + "']/{}"
         return root.findall(xpath.format(meta))[0].text
     except IndexError:
-        die("the game %s does not exist in this database" % name)
+        die("Either the game %s, its year or manufacturer, were not found in this database" % name)
 
 def game_meta_misc(name,root,node,meta,tag):
     try:
@@ -137,11 +142,11 @@ def add_line(filename):
     with open(local_playlist,"a") as playlist:
         if emulator == "mame2003":
             nodename = "game"
-            print("Adding game " + game_meta(gamename,root,nodename,'description') + " to emulator " + prettyprint(emulator))
+            print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + game_meta(gamename,root,nodename,'manufacturer') + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'video','orientation') + ";" + game_meta_misc(gamename,root,nodename,'input','control') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'video','screen') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'input','buttons') + '\n')
         elif emulator == "fba":
             nodename = "machine"
-            print("Adding game " + game_meta(gamename,root,nodename,'description') + " to emulator " + prettyprint(emulator))
+            print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + game_meta(gamename,root,nodename,'manufacturer') + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'display','rotate') + ';' + game_meta_misc(gamename,root,nodename,'control','type') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'control','buttons') + '\n')
 
 # main loop
