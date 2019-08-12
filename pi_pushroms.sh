@@ -47,8 +47,6 @@ do
           cd $FBAROMDIR/
           push_game fba $GAME.zip
         fi
-#      else
-#        echo "$GAME is a clone, skipping"
       fi
       done <<< $DRIVERGAMES
   fi
