@@ -54,7 +54,7 @@ def pushpl(hostname,user,sshkey,local,remote):
         sshcon.connect(hostname, username=user, key_filename=sshkey)
         sftp=sshcon.open_sftp()
         try:
-            backupname = remote + "." + datetime.datetime.now().strftime("%Y%m%d-%H%M")
+            backupname = remote + "." + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
             sftp.rename(remote,backupname)
             print("Previous remote playlist saved to " + backupname)
         except FileNotFoundError:
@@ -149,6 +149,12 @@ def add_line(filename):
             print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + game_meta(gamename,root,nodename,'manufacturer') + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'display','rotate') + ';' + game_meta_misc(gamename,root,nodename,'control','type') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'control','buttons') + '\n')
 
+def count_games(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
 # main loop
 roms = listgames(hostname,user,sshkey,rompath)
 if path.exists(local_playlist):
@@ -156,11 +162,17 @@ if path.exists(local_playlist):
 else:
     retrievepl(hostname,user,sshkey,remote_playlist)
 for rom in roms:
+    added = 0
     if not is_present(strip_title(rom),local_playlist):
         add_line(rom)
+        added = added + 1
 
-print("The local playlist is now up-to-date")
-
-pushpl(hostname,user,sshkey,local_playlist,remote_playlist)
+print("The local playlist is up-to-date")
+if added > 0:
+    pushpl(hostname,user,sshkey,local_playlist,remote_playlist)
+    print("Total games added : \u001b[32m" + str(added) + "\u001b[0m")
+else:
+    print("No games added : remote file left untouched")
+print("Total games in playlist : \u001b[32m" + str(count_games(local_playlist)) + "\u001b[0m")
 
 exit(0)
