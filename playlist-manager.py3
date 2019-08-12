@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import os
 from os import path
 import paramiko
@@ -34,13 +35,32 @@ def listgames(hostname,user,sshkey,path):
 def retrievepl(hostname,user,sshkey,path):
     sshcon = paramiko.SSHClient()
     sshcon.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    sshcon.connect(hostname, username=user, key_filename=sshkey)
-    sftp=sshcon.open_sftp()
     try:
+        sshcon.connect(hostname, username=user, key_filename=sshkey)
+        sftp=sshcon.open_sftp()
         sftp.get(remote_playlist,local_playlist)
-        print("No local playlist found, remote playlist downloaded...")
+        print("No local playlist found, remote playlist downloaded")
     except FileNotFoundError:
-        print("No local or remote playlist found, creating new one...")
+        print("No local or remote playlist found, creating new one")
+    sftp.close()
+    sshcon.close()
+
+def pushpl(hostname,user,sshkey,local,remote):
+    sshcon = paramiko.SSHClient()
+    sshcon.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        sshcon.connect(hostname, username=user, key_filename=sshkey)
+        sftp=sshcon.open_sftp()
+        try:
+            backupname = remote + "." + datetime.datetime.now().strftime("%Y%m%d-%H%M")
+            sftp.rename(remote,backupname)
+            print("Previous remote playlist saved to " + backupname)
+        except FileNotFoundError:
+            print("No existing remote playlist, uploading new one")
+        sftp.put(local,remote,callback=None,confirm=True)
+        print("Updated playlist uploaded to remote location")
+    except paramiko.ssh_exception.NoValidConnectionsError:
+        die("Unable to connect to the remote host, check the network parameters")
     sftp.close()
     sshcon.close()
 
@@ -94,6 +114,8 @@ def game_meta_misc(name,root,node,meta,tag):
         elif value == "horizontal":
             return "0"
         return value
+    except IndexError:
+        return ''
     except KeyError:
         return ''
 
@@ -125,12 +147,15 @@ def add_line(filename):
 # main loop
 roms = listgames(hostname,user,sshkey,rompath)
 if path.exists(local_playlist):
-    print("Local playlist found, updating local playlist...")
+    print("Local playlist found, updating local playlist")
 else:
     retrievepl(hostname,user,sshkey,remote_playlist)
 for rom in roms:
     if not is_present(strip_title(rom),local_playlist):
         add_line(rom)
 
-print("The playlist is now up-to-date.")
+print("The local playlist is now up-to-date")
+
+pushpl(hostname,user,sshkey,local_playlist,remote_playlist)
+
 exit(0)
