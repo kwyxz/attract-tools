@@ -81,7 +81,7 @@ def is_present(rom,romlist):
     with open(romlist,'r') as f:
         lines = f.readlines()
     for line in lines:
-        if rom + ";" in line:
+        if line.startswith(rom + ";"):
             result = True
             break
         elif rom in biosfiles:
@@ -156,17 +156,16 @@ def count_games(fname):
     return i + 1
 
 # main loop
+added = 0
 roms = listgames(hostname,user,sshkey,rompath)
 if path.exists(local_playlist):
     print("Local playlist found, updating local playlist")
 else:
     retrievepl(hostname,user,sshkey,remote_playlist)
 for rom in roms:
-    added = 0
     if not is_present(strip_title(rom),local_playlist):
         add_line(rom)
-        added = added + 1
-
+        added += 1
 print("The local playlist is up-to-date")
 if added > 0:
     pushpl(hostname,user,sshkey,local_playlist,remote_playlist)
