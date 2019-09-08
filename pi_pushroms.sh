@@ -12,8 +12,9 @@ if [ $# -lt 1 ]
 fi
 
 push_game () {
-    FULLNAME=$($MAMEBIN -listfull "$2" | grep -v "Description" | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
-    echo -n "Pushing $2 : $FULLNAME in folder $1 ... "
+    GAMENAME=$(basename $2 .zip)
+    FULLNAME=$($MAMEBIN -listfull "$GAMENAME" | grep -v "Description" | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
+    echo -e -n "Pushing $GAMENAME \t $FULLNAME \t in folder $1 ... "
     rsync -e ssh -avzq --progress $2 pi@$PI_IP:$PI_ROMPATH/$1/$2
     echo "done"
 }
