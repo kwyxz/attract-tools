@@ -14,9 +14,8 @@ fi
 push_game () {
     GAMENAME=$(basename $2 .zip)
     FULLNAME=$($MAMEBIN -listfull "$GAMENAME" | grep -v "Description" | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
-    echo -e -n "Pushing $1/$GAMENAME\t|\t$FULLNAME"
+    printf "%-10s%-10s%-60s\n" "$1" "$GAMENAME" "$FULLNAME"
     rsync -e ssh -avzq --progress $2 pi@$PI_IP:$PI_ROMPATH/$1/$2
-    echo "done"
 }
 
 while [ $# -ne 0 ]
@@ -27,9 +26,8 @@ do
     $MAMEBIN -listfull $1
   else
     DRIVERNAME=$($MAMEBIN -listsource $1 | awk '{print $2}' | cut -d '.' -f 1)
-    echo -n "Driver for game $1 is $DRIVERNAME, retrieving all games for this driver... "
+    echo "$1 parent driver = $DRIVERNAME"
     DRIVERGAMES=$($MAMEBIN -listsource | grep -w "$DRIVERNAME" | awk '{print $1}')
-    echo "done"
 
     while IFS= read -r GAME
     do
