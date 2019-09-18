@@ -1,8 +1,8 @@
 # Global settings to be parsed by every script
 
 # Raspberry Pi network settings
-PI_IP=192.168.1.15
-PI_ROMPATH=/home/pi/RetroPie/roms
+PI_IP=192.168.1.21
+PI_ROMPATH=/home/pi/roms
 
 # Local paths
 GAMESDIR=/mnt/space/Games/
