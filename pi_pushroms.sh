@@ -15,7 +15,7 @@ push_game () {
     GAMENAME=$(basename $2 .zip)
     FULLNAME=$($MAMEBIN -listfull "$GAMENAME" | grep -v "Description" | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
     printf "%-10s%-10s%-60s\n" "$1" "$GAMENAME" "$FULLNAME"
-    rsync -e ssh -avzq --progress $2 $PI_USER@$PI_IP:$PI_ROMPATH/$1/$2
+    scp -q $2 $PI_USER@$PI_IP:$PI_ROMPATH/$1/$2
 }
 
 while [ $# -ne 0 ]
