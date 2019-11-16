@@ -2,7 +2,7 @@
 
 . ./settings
 
-MAME2k10ROMDIR=$GAMESDIR/mame2010/
+MAME2003ROMDIR=$GAMESDIR/mame2003/
 FBAROMDIR=$GAMESDIR/fbneo/
 
 if [ $# -lt 1 ]
@@ -37,18 +37,14 @@ do
         CLONES=$($MAMEBIN -listclones | awk '{print $1}' | sort | uniq)
         if ! echo $CLONES | grep -q -w $GAME
         then
-          if [ "$DRIVERNAME" = "neogeo" ] || [ "$DRIVERNAME" = "cps2" ] || [ "$DRIVERNAME" = "cps3" ]
+          if [ -f $FBAROMDIR/$GAME.zip ]
           then
             cd $FBAROMDIR/
             push_game fbneo $GAME.zip
-          elif [ -f $MAME2k10ROMDIR/$GAME.zip ]
+          elif [ -f $MAME2003ROMDIR/$GAME.zip ]
           then
-            cd $MAME2k10ROMDIR/
-            push_game mame2010 $GAME.zip
-          elif [ -f $FBAROMDIR/$GAME.zip ]
-          then
-            cd $FBAROMDIR/
-            push_game fbneo $GAME.zip
+            cd $MAME2003ROMDIR/
+            push_game mame2003 $GAME.zip
           fi
         fi
         done <<< $DRIVERGAMES

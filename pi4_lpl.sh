@@ -57,10 +57,10 @@ do
         LIBNAME="FBNeo"
         _mame "$GAMENAME"
         ;;
-      mame2010)
-        PLAYLIST="MAME 2010.lpl"
+      mame2003)
+        PLAYLIST="MAME.lpl"
         LIBRETRO="/usr/lib/libretro/mame2010_libretro.so"
-        LIBNAME="MAME 2003"
+        LIBNAME="MAME"
         _mame "$GAMENAME"
         ;;
       *)
