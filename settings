@@ -3,7 +3,7 @@
 # Raspberry Pi network settings
 PI_USER=root
 PI_IP=192.168.1.21
-PI_ROMPATH=roms
+PI_ROMPATH=/storage/roms/
 
 # Local paths
 GAMESDIR=/mnt/space/Games/

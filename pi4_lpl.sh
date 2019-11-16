@@ -7,10 +7,10 @@ rm -f *.lpl
 echo "done."
 
 echo -n "Cleaning up remote directory on Pi4... "
-ssh root@$PI_IP "rm playlists/*" > /dev/null
+ssh root@$PI_IP "rm -f playlists/*.lpl" > /dev/null
 echo "done."
 
-CONSOLELIST=$(ssh $PI_IP "ls $PI_ROMPATH ; ls -1 " | tr -d $'\r' | sed -e 's/\/$//')
+CONSOLELIST=$(ssh root@$PI_IP "ls -1 $PI_ROMPATH/" | tr -d $'\r' | sed -e 's/\/$//')
 
 _mame ()
 {
@@ -44,8 +44,7 @@ for CONSOLE in $CONSOLELIST
 do
   echo Generating playlist for : $CONSOLE
 
-  COMMAND="open -u anonymous,blah $VITA_IP:$VITA_PORT ; cd /$ROMPATH/$CONSOLE/ ; cls -1 "
-  GAMELIST=$(lftp -c "$COMMAND" | tr ' ' '_' | tr -d $'\r')
+  GAMELIST=$(ssh root@$PI_IP "ls -1 $PI_ROMPATH/$CONSOLE/ | tr ' ' '_' | tr -d $'\r'")
   FULLNAME=""
 
   for GAMENAME in $GAMELIST
@@ -74,7 +73,7 @@ do
   then
     if [[ $SKIP -eq 0 ]]
     then
-      FULLPATH=$(echo $ROMPATH/$CONSOLE/$GAMENAME | tr '_' ' ')
+      FULLPATH=$(echo $PI_ROMPATH/$CONSOLE/$GAMENAME | tr '_' ' ')
       CRC32="00000000"
       echo "$FULLPATH" >> "$PLAYLIST"
       echo "$FULLNAME" >> "$PLAYLIST"
@@ -91,7 +90,7 @@ echo
 done
 
 echo -n "Uploading playlists to Pi4... "
-scp *.lpl $PI_IP:playlists/ > /dev/null
+scp *.lpl root@$PI_IP:playlists/ > /dev/null
 echo "done"
 
 exit 0
