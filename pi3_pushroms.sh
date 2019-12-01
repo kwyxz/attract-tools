@@ -15,7 +15,7 @@ push_game () {
     GAMENAME=$(basename $2 .zip)
     FULLNAME=$($MAMEBIN -listfull "$GAMENAME" | grep -v "Description" | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
     printf "%-10s%-10s%-60s\n" "$1" "$GAMENAME" "$FULLNAME"
-    scp -q $2 $PI_USER@$PI_IP:$PI_ROMPATH/$1/$2
+    scp -q $2 $PI3_USER@$PI3_IP:$PI3_ROMPATH/$1/$2
 }
 
 while [ $# -ne 0 ]
