@@ -2,7 +2,7 @@
 
 . ./settings
 
-MAME2003ROMDIR=$GAMESDIR/mame2003/
+MAME2010ROMDIR=$GAMESDIR/mame2010/
 FBAROMDIR=$GAMESDIR/fbneo/
 
 if [ $# -lt 1 ]
@@ -15,12 +15,12 @@ push_game () {
   GAMENAME=$(basename $2 .zip)
   FULLNAME=$($MAMEBIN -listfull "$GAMENAME" | grep -v "Description" | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
   printf "%-10s%-10s%-60s\n" "$1" "$GAMENAME" "$FULLNAME"
-  scp -q $2 root@$PI_IP:$PI_ROMPATH/$1/$2
+  scp -q $2 $PI4_USER@$PI4_IP:$PI4_ROMPATH/$1/$2
 }
 
 while [ $# -ne 0 ]
 do
-  if $(ssh root@$PI_IP "test -f $PI_ROMPATH/*/$1.zip"); then
+  if $(ssh $PI4_USER@$PI4_IP "test -f $PI4_ROMPATH/*/$1.zip"); then
     echo "Game $1 already present, skipping"
   else
     GAMES=$($MAMEBIN -listfull | awk '{print $1}' | sort | uniq)
@@ -41,10 +41,10 @@ do
           then
             cd $FBAROMDIR/
             push_game fbneo $GAME.zip
-          elif [ -f $MAME2003ROMDIR/$GAME.zip ]
+          elif [ -f $MAME2010ROMDIR/$GAME.zip ]
           then
-            cd $MAME2003ROMDIR/
-            push_game mame2003 $GAME.zip
+            cd $MAME2010ROMDIR/
+            push_game mame2010 $GAME.zip
           fi
         fi
         done <<< $DRIVERGAMES
