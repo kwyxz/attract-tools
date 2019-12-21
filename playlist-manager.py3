@@ -167,11 +167,8 @@ for rom in roms:
         add_line(rom)
         added += 1
 print("The local playlist is up-to-date")
-if added > 0:
-    pushpl(hostname,user,sshkey,local_playlist,remote_playlist)
-    print("Total games added : \u001b[32m" + str(added) + "\u001b[0m")
-else:
-    print("No games added : remote file left untouched")
+pushpl(hostname,user,sshkey,local_playlist,remote_playlist)
+print("Total games added : \u001b[32m" + str(added) + "\u001b[0m")
 print("Total games in playlist : \u001b[32m" + str(count_games(local_playlist)) + "\u001b[0m")
 
 exit(0)
