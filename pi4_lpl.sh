@@ -83,24 +83,34 @@ do
 
   case $CONSOLE in
     fbneo|neogeo|cps[1-2])
+      EXTENSION=".zip"
       PLAYLIST="FBNeo - Arcade Games.lpl"
       LIBRETRO="/usr/lib/libretro/fbneo_libretro.so"
       LIBNAME="FBNeo"
       ;;
     mame2003)
+      EXTENSION=".zip"
       PLAYLIST="MAME.lpl"
       LIBRETRO="/usr/lib/libretro/mame2010_libretro.so"
       LIBNAME="MAME"
       ;;
     naomi)
+      EXTENSION=".lst"
       PLAYLIST="Sega - NAOMI.lpl"
       LIBRETRO="/usr/lib/libretro/flycast_libretro.so"
       LIBNAME="Flycast"
       ;;
     neocd)
+      EXTENSION=".cue"
       PLAYLIST="SNK - Neo Geo CD.lpl"
       LIBRETRO="/usr/lib/libretro/fbneo_libretro.so"
       LIBNAME="FBNeo"
+      ;;
+    dc)
+      EXTENSION=".cdi"
+      PLAYLIST="Sega - Dreamcast.lpl"
+      LIBRETRO="/usr/lib/libretro/flycast_libretro.so"
+      LIBNAME="Flycast"
       ;;
     *)
       PLAYLIST=""
