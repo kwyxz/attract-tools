@@ -12,4 +12,5 @@ PI4_ROMPATH=/storage/roms
 # Local paths
 GAMESDIR=/mnt/space/Games/
 MAMEBIN=/usr/local/games/mame/mame64
+MAME2010ZIP="/mnt/space/Games/misc/romsets/MAME.0.139 (MAME2010).zip"
 FBNEODB=./fbneo.dat

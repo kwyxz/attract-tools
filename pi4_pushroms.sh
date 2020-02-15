@@ -37,17 +37,23 @@ do
         CLONES=$($MAMEBIN -listclones | awk '{print $1}' | sort | uniq)
         if ! echo $CLONES | grep -q -w $GAME
         then
-          if [ -f $FBAROMDIR/$GAME.zip ]
+          if [ ! -f "$MAME2010ROMDIR"/"$GAME.zip" ]
           then
-            cd $FBAROMDIR/
-            push_game fbneo $GAME.zip
-          elif [ -f $MAME2010ROMDIR/$GAME.zip ]
+            unzip -qq -o "$MAME2010ZIP" "$GAME.zip" -d "$MAME2010ROMDIR"
+          fi
+          if [ -f "$MAME2010ROMDIR"/"$GAME.zip" ]
           then
-            cd $MAME2010ROMDIR/
-            push_game mame2010 $GAME.zip
+            cd "$MAME2010ROMDIR"
+            push_game mame2010 "$GAME.zip"
+          else
+            if [ -f $FBAROMDIR/$GAME.zip ]
+            then
+              cd $FBAROMDIR/
+              push_game fbneo $GAME.zip
+            fi
           fi
         fi
-        done <<< $DRIVERGAMES
+      done <<< $DRIVERGAMES
     fi
   fi
   shift

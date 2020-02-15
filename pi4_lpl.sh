@@ -7,7 +7,7 @@ rm -f *.lpl
 echo "done."
 
 echo -n "Cleaning up remote directory on Pi4... "
-ssh $PI4_USER@$PI4_IP "rm -f playlists/*.lpl" > /dev/null
+ssh $PI4_USER@$PI4_IP "rm -rf playlists/*.lpl roms/downloads" > /dev/null
 echo "done."
 
 CONSOLELIST=$(ssh $PI4_USER@$PI4_IP "ls -1 $PI4_ROMPATH/" | tr -d $'\r' | sed -e 's/\/$//')
@@ -37,7 +37,7 @@ _fbneo ()
 _getname ()
 {
   case $3 in
-    fbneo|neogeo|cps[12])
+    fbneo|neogeo|cps[123])
       _fbneo "$1"
       ;;
     mame*)
@@ -82,13 +82,13 @@ do
   FULLNAME=""
 
   case $CONSOLE in
-    fbneo|neogeo|cps[1-2])
+    fbneo|neogeo|cps[123])
       EXTENSION=".zip"
       PLAYLIST="FBNeo - Arcade Games.lpl"
       LIBRETRO="/usr/lib/libretro/fbneo_libretro.so"
       LIBNAME="FBNeo"
       ;;
-    mame2003)
+    mame2010)
       EXTENSION=".zip"
       PLAYLIST="MAME.lpl"
       LIBRETRO="/usr/lib/libretro/mame2010_libretro.so"
