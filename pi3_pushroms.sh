@@ -3,11 +3,11 @@
 . ./settings
 
 MAME2k3ROMDIR=$GAMESDIR/mame2003/
-FBAROMDIR=$GAMESDIR/fba/
+FBAROMDIR=$GAMESDIR/fbneo/
 
 if [ $# -lt 1 ]
   then
-    echo "Usage: $0 <MAME driver>" 
+    echo "Usage: $0 <MAME driver>"
     exit 1
 fi
 
@@ -21,7 +21,7 @@ push_game () {
 while [ $# -ne 0 ]
 do
   GAMES=$($MAMEBIN -listfull | awk '{print $1}' | sort | uniq)
-  if ! echo $GAMES | grep -q -w $1  
+  if ! echo $GAMES | grep -q -w $1
   then
     $MAMEBIN -listfull $1
   else
@@ -34,21 +34,48 @@ do
       CLONES=$($MAMEBIN -listclones | awk '{print $1}' | sort | uniq)
       if ! echo $CLONES | grep -q -w $GAME
       then
-        if [ "$DRIVERNAME" = "neogeo" ] || [ "$DRIVERNAME" = "cps2" ] || [ "$DRIVERNAME" = "cps3" ]
-        then
-          cd $FBAROMDIR/
-          push_game fba $GAME.zip
-        elif [ -f $MAME2k3ROMDIR/$GAME.zip ]
-        then
-          cd $MAME2k3ROMDIR/
-          push_game mame2003 $GAME.zip
-        elif [ -f $FBAROMDIR/$GAME.zip ]
-        then
-          cd $FBAROMDIR/
-          push_game fba $GAME.zip
-        fi
+        case "$DRIVERNAME" in
+          cps2|cps3|neogeo|segas16b)
+            cd $FBAROMDIR/
+            push_game fba $GAME.zip
+            ;;
+          dec0)
+            cd $MAME2k3ROMDIR/
+            push_game mame2003 $GAME.zip
+            ;;
+          *)
+            if [ -f $MAME2k3ROMDIR/$GAME.zip ]
+            then
+              cd $MAME2k3ROMDIR/
+              case $GAME in
+                simpsons)
+                  push_game mame2003 simpsn2p.zip
+                  ;;
+                ssriders)
+                  push_game mame2003 ssrdrubc.zip
+                  ;;
+                tmnt)
+                  push_game mame2003 tmht2p.zip
+                  ;;
+                tmnt2)
+                  push_game mame2003 tmnt22p.zip
+                  ;;
+                xmen)
+                  push_game mame2003 xmen2p.zip
+                  ;;
+                *)
+                  push_game mame2003 $GAME.zip
+                  ;;
+              esac
+            elif [ -f $FBAROMDIR/$GAME.zip ]
+            then
+              cd $FBAROMDIR/
+              push_game fba $GAME.zip
+            fi
+            ;;
+        esac
       fi
-      done <<< $DRIVERGAMES
+    done <<< $DRIVERGAMES
   fi
   shift
 done
