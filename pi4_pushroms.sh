@@ -7,7 +7,7 @@ FBAROMDIR=$GAMESDIR/fbneo/
 
 if [ $# -lt 1 ]
   then
-    echo "Usage: $0 <MAME driver>" 
+    echo "Usage: $0 <MAME driver>"
     exit 1
 fi
 
@@ -24,14 +24,14 @@ do
     echo "Game $1 already present, skipping"
   else
     GAMES=$($MAMEBIN -listfull | awk '{print $1}' | sort | uniq)
-    if ! echo $GAMES | grep -q -w $1  
+    if ! echo $GAMES | grep -q -w $1
     then
-      $MAMEBIN -listfull $1
+      exit 1
     else
       DRIVERNAME=$($MAMEBIN -listsource $1 | awk '{print $2}' | cut -d '.' -f 1)
       echo "$1 parent driver = $DRIVERNAME"
       DRIVERGAMES=$($MAMEBIN -listsource | grep -w "$DRIVERNAME" | awk '{print $1}')
-  
+
       while IFS= read -r GAME
       do
         CLONES=$($MAMEBIN -listclones | awk '{print $1}' | sort | uniq)
