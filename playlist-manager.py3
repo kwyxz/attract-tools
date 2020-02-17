@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 hostname = "192.168.1.15"
 user = "pi"
 sshkey = "/home/kwyxz/.ssh/id_rsa_kwyxz_4096b"
-rompath = "/home/pi/RetroPie/roms"
+rompath = "/home/pi/roms"
 local_playlist = "./Picade.txt"
 remote_playlist = "/home/pi/.attract/romlists/Picade.txt"
 
@@ -96,7 +96,7 @@ def find_emu(absrom):
     return absrom.split('/')[1]
 
 def prettyprint(emuname):
-    if emuname == "fba":
+    if emuname == "fbneo":
         return "Final Burn Neo"
     elif emuname == "mame2003":
         return "MAME 2003"
@@ -128,7 +128,7 @@ def open_tree(emu):
     try:
         if emu == "mame2003":
             return ET.parse('gamelist078.xml')
-        elif emu == "fba":
+        elif emu == "fbneo":
             return ET.parse('gamelist0175.xml')
         die("unknown emulator")
     except FileNotFoundError:
@@ -144,7 +144,7 @@ def add_line(filename):
             nodename = "game"
             print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + game_meta(gamename,root,nodename,'manufacturer') + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'video','orientation') + ";" + game_meta_misc(gamename,root,nodename,'input','control') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'video','screen') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'input','buttons') + '\n')
-        elif emulator == "fba":
+        elif emulator == "fbneo":
             nodename = "machine"
             print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + game_meta(gamename,root,nodename,'manufacturer') + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'display','rotate') + ';' + game_meta_misc(gamename,root,nodename,'control','type') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'control','buttons') + '\n')
