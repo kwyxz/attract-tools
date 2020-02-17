@@ -3,7 +3,7 @@
 # Raspberry Pi network settings
 PI3_USER=pi
 PI3_IP=192.168.1.15
-PI3_ROMPATH=/home/pi/RetroPie/roms
+PI3_ROMPATH=/home/pi/roms
 
 PI4_USER=root
 PI4_IP=192.168.1.21
