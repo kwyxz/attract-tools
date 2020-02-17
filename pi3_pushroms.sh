@@ -102,14 +102,14 @@ select_emu() {
       push_game mame2003 "$1"
       ;;
     *)
-      if [ -f ${MAME2k3ROMDIR}/"$2".zip ]
+      if [ -f ${MAME2k3ROMDIR}/"$1".zip ]
       then
         cd ${MAME2k3ROMDIR}
-        push_emu mame2003 "$2"
-      elif [ -f $FBNEOROMDIR/"$2".zip ]
+        push_emu mame2003 "$1"
+      elif [ -f $FBNEOROMDIR/"$1".zip ]
       then
         cd ${FBNEOROMDIR}/
-        push_emu fbneo "$2"
+        push_emu fbneo "$1"
       else echo -e "\033[0;31m$2\033[0m not found, skipping..."
       fi
       ;;
