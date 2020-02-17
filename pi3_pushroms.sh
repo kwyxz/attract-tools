@@ -34,7 +34,7 @@ push_game() {
     printf "%-10s\e[1;33m%-10s\e[0m%-60s\n" "dup" "$2" ""
   else
     print_fullname "$1" "$2"
-#    rsync -aq --update -e ssh "$2".zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/"$1"/"$2".zip
+    rsync -aq --update -e ssh "$2".zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/"$1"/"$2".zip
   fi
 }
 
