@@ -127,9 +127,13 @@ def game_meta_misc(name,root,node,meta,tag):
 def open_tree(emu):
     try:
         if emu == "mame2003":
-            return ET.parse('gamelist078.xml')
+            with open('./gamelist078.xml') as xml_file_078:
+                tree_078 = ET.parse(xml_file_078)
+                return tree_078
         elif emu == "fbneo":
-            return ET.parse('gamelist0175.xml')
+            with open('./gamelist0175.xml') as xml_file_0175:
+                tree_0175 = ET.parse(xml_file_0175)
+                return tree_0175
         die("unknown emulator")
     except FileNotFoundError:
         die("XML files not present")
