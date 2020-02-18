@@ -61,7 +61,11 @@ push_game() {
     print_yellow "dup" "$2" "skipping..."
   else
     print_fullname "$1" "$2"
-    rsync -aq --update -e ssh "$2".zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/"$1"/"$2".zip
+    if [ -f "$2".zip ]; then
+      rsync -aq --update -e ssh "$2".zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/"$1"/"$2".zip
+    else
+      print_red "critical" "$2" "not found"
+    fi
   fi
 }
 
