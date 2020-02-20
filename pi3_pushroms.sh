@@ -7,11 +7,13 @@ FBNEOROMDIR=$GAMESDIR/fbneo/
 CLONES=$($MAMEBIN -listclones | awk '{print $1}' | sort | uniq)
 
 shopt -s extglob
-QUIZZES='+(atamanot|bkrtmaq|coronatn|cworld2j|danchiq|fbcrazy|gakupara|gekiretu|hatena|hayaosi1|hayaosi2|hayaosi3|hotdebut|hyhoo|hyhoo2|introdon|inufuku|kaiunqz|keithlcy|macha|marukodq|mdhorse|mv1cwq|myangel|myangel2|myangel3|nettoqc|qad|qcrayon|qdrmfgp|qdrmfgp2|qgakumon|qgh|qgundam|qjinsei|qkracer|qmegamis|qmhayaku|qndream|qrouka|qsangoku|qsww|qtheater|qtono1|qtono2j|qtorimon|*quiz*|qz*|ryorioh|sukuinuf|sunaq|supertr|trivquiz|wizzquiz|xsedae|yuyugogo)'
-MAHJONG='+(4psimasy|7jigen|akiss|av2mj1bb|av2mj2rg|bakatono|bananadr|cafebrk|cafedoll|cafepara|cafetime|chinmoku|club90s|cmehyou|csplayh1|csplayh5|csplayh6|cultures|daimyojn|daireika|daiyogen|dokyusei|dokyusp|dondenmj|dtoyoken|dunhuang|emjjoshi|emjscanb|emjtrapz|froman2b|fromanc2|fromanc4|fromance|fromancr|gakusai|gakusai2|gal10ren|galkaika|galkoku|gekisha|goodejan|hanamomo|hotgmcki|hourouki|hypreac2|hypreact|idolmj|imekura|janbari|janjans1|janjans2|janputer|janshinp|jantotsu|jituroku|jogakuen|jongbou|jongtei|kaguya|kaguya2|kakumei|kakumei2|kisekaem|kiwame|kiwames|koinomp|korinai|lemnangl|lhzb2|mahjngoh|mahretsu|majrjhdx|majs101b|majxtal7|mcnpshnt|mcontest|mfightc|mfunclub|mgakuen|mgakuen2|mgcs|mgdh|mgmen89|mhgaiden|mhhonban|mirage|mj1|mj2|mj3|mj3evo|mj3evoup|mj4simai|mjangels|mjcamera|mjcamerb|mjchuuka|mjclinic|mjclub|mjcomv1|mjdchuka|mjdejavu|mjderngr|mjdialq2|mjdiplob|mjegolf|mjelctrn|mjflove|mjfocus|mjfriday|mjgaiden|mjgalpri|mjgnight|mjgottsu|mjgottub|mjgtaste|mjhokite|mjifb|mjikaga|mjjoship|mjkinjas|mjkjidai|mjkoiura|mjkojink|mjlaman|mjlstory|mjmaglmp|mjmania|mjmyorn2|mjmyster|mjmyuniv|mjnanpas|mjnatsu|mjnquest|mjprivat|mjreach|mjreach1|mjschuka|mjsenka|mjsenpu|mjsikaku|mjsister|mjsiyoub|mjtensin|mjuraden|mjvegasa|mjyarou|mjyougo|mjyuugi|mjzoomin|mkeibaou|mladyhtr|mmehyou|mmmbanc|mogitate|momotaro|mrokumei|mscoutm|msjiken|myfairld|neruton|nmsengen|ntopstar|otatidai|otonano|ougonhai|pachiten|patimono|ponchin|pss62|pstadium|ptrmj|qmhayaku|renaiclb|renaimj|rmhaihai|rmhaijin|rmhaisei|ron2|royalmj|ryouran|sailorws|scandal|sdmg2|sengokmj|sengomjk|shabdama|slqz2|slqz3|srmp1|srmp2|srmp3|srmp4|srmp5|srmp6|srmp7|srmvs|sryudens|taiwanmb|telmahjn|tenkai|tjsb|tmmjprd|tonpuu|triplew1|triplew2|uchuuai|ultramhm|urashima|usagiym|vanilla|vitaminc|vmahjong|vsmahjng|wcatcher|yarunara|yosimoto|nb1412m2|nb1413m3|nb1414m4|md_rom_mjlov|md_rom_cjmjclub|neogeo_mj_ac|neogeo_mj|nes_txc_mjblock|nes_mjpanel|ryukyu)'
-REJECTS='+(4in1boot|dmnfrnt|dragonsh|drgw2|dw2001|dwpc|happy6|isgsm|ixion|janshin|killbld*|kov*|legend|luctoday|martmast|mastkin|moremorp|olds*|orbitron|orlegend|pgm|pisces|photoy2k|puzlstar|puzzli2|sbm|sf2t|sfzch|spcfrcii|spclforc|superbon|svg|theglad|tokisens|tstrike|wofch)'
+QUIZZES='+(atamanot|bkrtmaq|coronatn|cworld2j|danchiq|fbcrazy|gakupara|gekiretu|hatena|hayaosi1|hayaosi2|hayaosi3|hotdebut|hyhoo|hyhoo2|introdon|inufuku|kaiunqz|keithlcy|macha|marukodq|mdhorse|mv1cwq|myangel|myangel2|myangel3|nettoqc|qad|qcrayon|qcrayon2|qdrmfgp|qdrmfgp2|qgakumon|qgh|qgundam|qjinsei|qkracer|qmegamis|qmhayaku|qndream|qrouka|qsangoku|qsww|qtheater|qtono1|qtono2j|qtorimon|*quiz*|qz*|ryorioh|sukuinuf|sunaq|supertr|trivquiz|wizzquiz|xsedae|yuyugogo)'
+MAHJONG='+(4psimasy|7jigen|akiss|av2mj1bb|av2mj2rg|bakatono|bananadr|chinmoku|club90s|cmehyou|csplayh1|csplayh5|csplayh6|cultures|daimyojn|daiyogen|dakkochn|dokyusei|dokyusp|dtoyoken|dunhuang|emjjoshi|emjscanb|emjtrapz|froman2b|fromanc2|fromanc4|fromance|fromancr|gakusai|gakusai2|gal10ren|galkaika|galkoku|gekisha|goodejan|hanamomo|hotgmcki|hourouki|hypreac2|hypreact|idolmj|imekura|janbari|janjans1|janjans2|janshin|jantotsu|jituroku|jogakuen|jongbou|jongtei|kaguya|kaguya2|kisekaem|kiwame|kiwames|koinomp|korinai|lemnangl|lhzb2|mahjngoh|mahretsu|majrjhdx|majxtal7|marukin|mcnpshnt|mcontest|md_rom_cjmjclub|md_rom_mjlov|mfightc|mfunclub|mgakuen|mgakuen2|mgcs|mgdh|mgmen89|mhgaiden|mhhonban|mirage|mj1|mj2|mj3|mj3evo|mj3evoup|mj4simai|mjangels|mjcamera|mjcamerb|mjchuuka|mjclinic|mjcomv1|mjdchuka|mjdialq2|mjegolf|mjelctrn|mjflove|mjfocus|mjfriday|mjgaiden|mjgalpri|mjgnight|mjgottsu|mjgottub|mjgtaste|mjhokite|mjikaga|mjjoship|mjkinjas|mjkjidai|mjkoiura|mjkojink|mjlaman|mjlstory|mjmaglmp|mjmania|mjmyorn2|mjmyster|mjmyuniv|mjnanpas|mjnatsu|mjnquest|mjprivat|mjreach|mjreach1|mjschuka|mjsenpu|mjsikaku|mjsister|mjuraden|mjyougo|mjyuugi|mkeibaou|mladyhtr|mmehyou|mmmbanc|mogitate|momotaro|mrokumei|mscoutm|msjiken|myfairld|nb1412m2|nb1413m3|nb1414m4|neruton|nes_mjpanel|nes_txc_mjblock|nmsengen|ntopstar|otatidai|otonano|ougonhai|pachiten|patimono|ponchin|pss62|pstadium|ptrmj|qmhayaku|renaiclb|renaimj|rmhaihai|rmhaijin|rmhaisei|ron2|ryouran|ryukyu|sailorws|scandal|sdmg2|sengokmj|sengomjk|shabdama|sjryuko|slqz2|slqz3|srmp1|srmp2|srmp3|srmp4|srmp5|srmp6|srmp7|srmvs|sryudens|taiwanmb|telmahjn|tenkai|tjsb|tmmjprd|tonpuu|triplew1|triplew2|uchuuai|ultramhm|usagiym|vanilla|vitaminc|vmahjong|vsmahjng|wcatcher|yarunara|yosimoto)'
+MATURE='+(bakatono|blockgal|choko|honeydol|pairlove|peekaboo|pkladies|prtytime|stoffy|streakng|toffy|wiggie)'
+REJECTS='+(1943mii|3in1semi|4in1boot|dokaben|dmnfrnt|dragonsh|drgw2|dw2001|dwpc|happy6|isgsm|ixion|janshin|jockeygp|killbld*|korokoro|kov*|legend|luctoday|martmast|mastkin|moremorp|olds*|orbitron|orlegend|pbobble|pbobble2|pgm|pisces|photoy2k|puzlstar|puzzli2|rocktrv2|sbm|sf2t|sfzch|shinfz|spcfrcii|spclforc|spdball|spdcoin|stakwin*|superbon|suzuk*|svg|sws*|theglad|tokisens|tstrike|twinqix|wofch)'
 
 KONAMI='+(simpsons|ssriders|tmnt|tmnt2|xmen)'
+SEGA=+'spidman'
 
 print_color() {
   printf "%-10.9s\e[1;${4}m%-10.9s\e[0m%-60s\n" "$1" "$2" "$3"
@@ -108,17 +110,20 @@ push_alt_game() {
 
 push_emu() {
   case "$2" in
+    ${KONAMI})
+      push_alt_game "$1" "$2"
+      ;;
+    ${MAHJONG})
+      print_yellow "mahjong" "$2" "skipping..."
+      ;;
+    ${MATURE})
+      print_yellow "mature" "$2" "skipping..."
+      ;;
     ${QUIZZES})
       print_yellow "quiz" "$2" "skipping..."
       ;;
     ${REJECTS})
       print_yellow "blacklist" "$2" "skipping..."
-      ;;
-    ${MAHJONG})
-      print_yellow "mahjong" "$2" "skipping..."
-      ;;
-    ${KONAMI})
-      push_alt_game "$1" "$2"
       ;;
     *)
       push_game "$1" "$2"
@@ -143,30 +148,28 @@ select_driver() {
   case "$2" in
     cps2|neogeo|segas16b)
       cd ${FBNEOROMDIR}
-      push_game fbneo "$1"
+      push_emu fbneo "$1"
       ;;
     cps3)
       push_cps3_game "$1"
       ;;
     dec0)
       cd ${MAME2k3ROMDIR}
-      push_game mame2003 "$1"
-      ;;
-    namcos11|stv)
-      print_red "denied" "$1" "driver not allowed"
+      push_emu mame2003 "$1"
       ;;
     segas32)
       case "$1" in
         spidman)
-          cd ${MAME2k3ROMDIR}
-          print_fullname "mame2003" "$1"
-          ALTROM="spidey"
-          rsync -aq --update -e ssh "$ALTROM".zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/mame2003/${ALTROM}.zip
+          print_fullname "mame2003" "spidman"
+          rsync -aq --update -e ssh spidey.zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/mame2003/spidey.zip
           ;;
         *)
           select_emu "$1"
           ;;
-        esac
+      esac
+      ;;
+    namcos11|stv|jalmah|mahjong|royalmah)
+      print_red "denied" "$1" "driver not allowed"
       ;;
     *)
     select_emu "$1"
