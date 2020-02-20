@@ -13,7 +13,6 @@ MATURE='+(bakatono|blockgal|choko|honeydol|pairlove|peekaboo|pkladies|prtytime|s
 REJECTS='+(1943mii|3in1semi|4in1boot|dokaben|dmnfrnt|dragonsh|drgw2|dw2001|dwpc|happy6|isgsm|ixion|janshin|jockeygp|killbld*|korokoro|kov*|legend|luctoday|martmast|mastkin|moremorp|olds*|orbitron|orlegend|pbobble|pbobble2|pgm|pisces|photoy2k|puzlstar|puzzli2|rocktrv2|sbm|sf2t|sfzch|shinfz|spcfrcii|spclforc|spdball|spdcoin|stakwin*|superbon|suzuk*|svg|sws*|theglad|tokisens|tstrike|twinqix|wofch)'
 
 KONAMI='+(simpsons|ssriders|tmnt|tmnt2|xmen)'
-SEGA=+'spidman'
 
 print_color() {
   printf "%-10.9s\e[1;${4}m%-10.9s\e[0m%-60s\n" "$1" "$2" "$3"
