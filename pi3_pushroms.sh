@@ -217,5 +217,5 @@ do
   shift
 done
 
-[ -f ./LISTFULL ] && rm -f ./LISTFULL
+[[ -f ./LISTFULL ]] && rm -f ./LISTFULL
 exit 0
