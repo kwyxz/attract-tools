@@ -6,7 +6,7 @@ SCRIPTPATH=$(pwd)
 MAME2k3ROMDIR=$GAMESDIR/mame2003/
 FBNEOROMDIR=$GAMESDIR/fbneo/
 CLONES=$($MAMEBIN -listclones | awk '{print $1}' | sort | uniq)
-$MAMEBIN -listfull | sort > ./LISTFULL
+$MAMEBIN -listfull | sort > ${SCRIPTPATH}/LISTFULL
 
 shopt -s extglob
 BOOTLEG='+(39in1|aladmdb|backfirt|barek3mb|black|bldyr3b|brod|chry10|cpokerpk|cps3boot|crswd2bl|denseib|empcity|endless|ffight2b|froman2b|fspiderb|gmgalax|igromult|iron|janputer|jparkmb|kbash2|kinstb|kok|lasthope|legendsb|lucky74|m4tupen|mjreach|mk3mdb|mk3snes|moguchan|mstworld|pengadvb|pesadelo|protennb|rushbets|sblast2b|shinfz|slotunbl|smssgame|smssgamea|sonic2mb|srmdb|ssf2mdb|tetrbx|tetriskr|tourvis|twinktmb|venom|zigzagb|zintrckb|bootleg_sys16a_sprite|seibu_cop_boot|neocart_matrimbl|neocart_kof10th|neocart_kof2002b|neocart_kf2k3bl|neocart_boot|neocart_garoubl|neocart_kof97oro|neocart_kf10thep|neocart_kf2k5uni|neocart_kf2k4se|neocart_lans2004|neocart_samsho5b|neocart_mslug3b6|neocart_ms5plus|neocart_kog|neocart_svcboot|neocart_svcplus|neocart_svcplusa|neocart_svcsplus|ng_cthd_prot|ng_kof2k3bl_prot|ngboot_prot|nes_mbaby|nes_asn)'
@@ -221,5 +221,5 @@ do
   shift
 done
 
-[[ -f ./LISTFULL ]] && rm -f ./LISTFULL
+rm -f ${SCRIPTPATH}/LISTFULL
 exit 0
