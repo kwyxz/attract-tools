@@ -64,7 +64,11 @@ push_game() {
   else
     print_green "$1" "$2" "$FULLNAME"
     if [ -f "$2".zip ]; then
-      rsync -aq --update -e ssh "$2".zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/"$1"/"$2".zip
+      if [ -n "${STAGING+1}" ]; then
+        print_yellow "staging" "$2" "not pushing"
+      else
+        rsync -aq --update -e ssh "$2".zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/"$1"/"$2".zip
+      fi
     else
       print_red "critical" "$2" "not found"
     fi
