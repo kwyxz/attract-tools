@@ -167,11 +167,11 @@ def add_line(filename):
     with open(local_playlist,"a") as playlist:
         if emulator == "mame2003":
             nodename = "game"
-            print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
+            print('{:<9} {:<9} \u001b[32m{:<62}\u001b[0m'.format(emulator, gamename,game_meta(gamename,root,nodename,'description')))
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + format_string(game_meta(gamename,root,nodename,'manufacturer'),10) + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'video','orientation') + ";" + game_meta_misc(gamename,root,nodename,'input','control') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'video','screen') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'input','buttons') + '\n')
         elif emulator == "fbneo":
             nodename = "machine"
-            print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
+            print('{:<9} {:<9} \u001b[32m{:<62}\u001b[0m'.format(emulator, gamename,game_meta(gamename,root,nodename,'description')))
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + format_string(game_meta(gamename,root,nodename,'manufacturer'),10) + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'display','rotate') + ';' + game_meta_misc(gamename,root,nodename,'control','type') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'control','buttons') + '\n')
 
 # count the amount of games in the playlist
