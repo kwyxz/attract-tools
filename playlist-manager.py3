@@ -6,6 +6,7 @@ from os import path
 import paramiko
 import xml.etree.ElementTree as ET
 
+# basic settings relevant to the Pi being used
 hostname = "192.168.1.15"
 user = "pi"
 sshkey = "/home/kwyxz/.ssh/id_rsa_kwyxz_4096b"
@@ -13,12 +14,15 @@ rompath = "/home/pi/roms"
 local_playlist = "./Picade.txt"
 remote_playlist = "/home/pi/.attract/romlists/Picade.txt"
 
+# files to ignore if found
 biosfiles = ['neogeo','cpzn1','cpzn2']
 
+# in case of any error
 def die(message):
     print("\u001b[31mERROR:\u001b[0m " + message)
     exit(1)
 
+# list games on the remote Pi
 def listgames(hostname,user,sshkey,path):
     games = []
     sshcon = paramiko.SSHClient()
@@ -34,6 +38,7 @@ def listgames(hostname,user,sshkey,path):
     except paramiko.ssh_exception.NoValidConnectionsError:
         die("Unable to connect to the remote host, check the network parameters")
 
+# if a playlist is already present on the remote host, download it
 def retrievepl(hostname,user,sshkey,path):
     sshcon = paramiko.SSHClient()
     sshcon.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -47,16 +52,19 @@ def retrievepl(hostname,user,sshkey,path):
     sftp.close()
     sshcon.close()
 
+# upload the playlist that is present on the local host to the remote
 def pushpl(hostname,user,sshkey,local,remote):
     sshcon = paramiko.SSHClient()
     sshcon.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         sshcon.connect(hostname, username=user, key_filename=sshkey)
         sftp=sshcon.open_sftp()
+        # if a playlist is present on the remote, back it up
         try:
             backupname = remote + "." + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
             sftp.rename(remote,backupname)
             print("Previous remote playlist saved to " + backupname)
+        # if no playlist is on the remote, simply print this
         except FileNotFoundError:
             print("No existing remote playlist, uploading new one")
         sftp.put(local,remote,callback=None,confirm=True)
@@ -66,6 +74,7 @@ def pushpl(hostname,user,sshkey,local,remote):
     sftp.close()
     sshcon.close()
 
+# this file is used to find the game categories
 def category(name):
     with open('catver.ini','r') as f:
         catver = f.readlines()
@@ -76,6 +85,7 @@ def category(name):
             break
     return categ
 
+# check out if the game is already in the playlist
 def is_present(rom,romlist):
     result = False
     with open(romlist,'r') as f:
@@ -95,6 +105,7 @@ def strip_title(absrom):
 def find_emu(absrom):
     return absrom.split('/')[1]
 
+# pretty-print the emulator names
 def prettyprint(emuname):
     if emuname == "fbneo":
         return "Final Burn Neo"
@@ -103,6 +114,7 @@ def prettyprint(emuname):
     else:
         die("unknown emulator")
 
+# retrieve the metadata from the XML file
 def game_meta(name,root,node,meta):
     try:
         xpath = "./" + node + "[@name='" + name + "']/{}"
@@ -124,12 +136,14 @@ def game_meta_misc(name,root,node,meta,tag):
     except KeyError:
         return ''
 
+# format the name of the manufacturer for better display on Nevato theme cab
 def format_string(publisher,length):
     if len(publisher) > length:
         formatted = length-len(publisher)
-        publisher = publisher[:formatted]
+        publisher = publisher[:formatted] + '-'
     return publisher
 
+# open the XML tree in the metadata files
 def open_tree(emu):
     try:
         if emu == "mame2003":
@@ -144,6 +158,7 @@ def open_tree(emu):
     except FileNotFoundError:
         die("XML files not present")
 
+# add a line to the playlist
 def add_line(filename):
     emulator = find_emu(filename)
     gamename = strip_title(filename)
@@ -159,6 +174,7 @@ def add_line(filename):
             print("Adding game \u001b[32m" + game_meta(gamename,root,nodename,'description') + "\u001b[0m to emulator \u001b[33m" + prettyprint(emulator) + "\u001b[0m")
             playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + format_string(game_meta(gamename,root,nodename,'manufacturer'),10) + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'display','rotate') + ';' + game_meta_misc(gamename,root,nodename,'control','type') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'control','buttons') + '\n')
 
+# count the amount of games in the playlist
 def count_games(fname):
     with open(fname) as f:
         for i, l in enumerate(f):
