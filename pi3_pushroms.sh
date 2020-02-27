@@ -132,6 +132,7 @@ push_cps3_game() {
 }
 
 # merge parent game $1 with correct version $2
+# maybe this could replace the cps3 function in the future
 merge_parent_game() {
   # not necessary for now since all games are MAME2003, but present in case
   if [ -f ${MAME2k3ROMDIR}/${1}.zip ]; then
