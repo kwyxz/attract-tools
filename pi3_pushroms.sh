@@ -134,49 +134,62 @@ push_cps3_game() {
 # merge parent game $1 with correct version $2
 # maybe this could replace the cps3 function in the future
 merge_parent_game() {
-  # not necessary for now since all games are MAME2003, but present in case
-  if [ -f ${MAME2k3ROMDIR}/${1}.zip ]; then
-    EMUROMDIR=${MAME2k3ROMDIR}
-  elif [ -f ${FBNEOROMDIR}/${1}.zip ]; then
-    EMUROMDIR=${FBNEOROMDIR}
+  if is_present ${2}; then
+    # If the game is already on the remote host we just skip it
+    print_yellow "dup" "$2" "${FULLNAME}"
   else
-    die "rom files for $1 not found"
+    # not necessary for now since all games are MAME2003, but present in case
+    if [ -f ${MAME2k3ROMDIR}/${1}.zip ]; then
+      EMUROMDIR="mame2003"
+    elif [ -f ${FBNEOROMDIR}/${1}.zip ]; then
+      EMUROMDIR="fbneo"
+    else
+      die "rom files for $1 not found"
+    fi
+    # create a temp folder
+    mkdir -p /tmp/${2}
+    cd /tmp/${2}
+    # merge the parent rom with the child rom
+    echo "Merging $2 into $1"
+    unzip -qo ${GAMESDIR}/${EMUROMDIR}/${1}.zip
+    unzip -qo ${GAMESDIR}/${EMUROMDIR}/${2}.zip
+    zip -qo -9 ${2}.zip *
+    # upload the resulting game
+    # not using push_game as the alternative name might not be in MAME anymore
+    print_green "$EMUROMDIR" "$2" "$FULLNAME"
+    rsync -aq --update -e ssh /tmp/${2}/${2}.zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/${EMUROMDIR}/${2}.zip
+    cd /tmp
+    # remove the temp folder
+    [[ -d /tmp/${2} ]] && rm -rf /tmp/${2}
   fi
-  # create a temp folder
-  mkdir -p /tmp/${2}
-  cd /tmp/${2}
-  # merge the parent rom with the child rom
-  unzip -qo ${EMUROMDIR}/${1}.zip
-  unzip -qo ${EMUROMDIR}/${2}.zip
-  zip -qo -9 ${2}.zip *
-  # upload the resulting game
-  # not using push_game as the alternative name might not be in MAME anymore
-  rsync -aq --update -e ssh /tmp/${2}/${2}.zip ${PI3_USER}@${PI3_IP}:${PI3_ROMPATH}/${EMUROMDIR}/${2}.zip
-  cd /tmp
-  # remove the temp folder
-  [[ -d /tmp/${1} ]] && rm -rf /tmp/${1}
 }
 
 # find if we need to push an alternate game
 push_alt_game() {
-  print_green "$1" "$2" "$FULLNAME"
   case "$2" in
     simpsons)
       ALTROM="simpsn2p"
+      merge_parent_game ${2} ${ALTROM}
       ;;
     ssriders)
       ALTROM="ssrdrubc"
+      merge_parent_game ${2} ${ALTROM}
       ;;
     tmnt)
       ALTROM="tmht2p"
+      push_game mame2003 ${ALTROM}
       ;;
-    tmnt2|xmen)
+    tmnt2)
       ALTROM="${2}2p"
+      push_game mame2003 ${ALTROM}
+      ;;
+    xmen)
+      ALTROM="${2}2p"
+      push_game mame2003 ${ALTROM}
       ;;
     esac
     # with Konami games we need to merge
     # this might not be necessary with future cases
-    merge_parent_game ${2} ${ALTROM}
 }
 
 # handle specific cases
