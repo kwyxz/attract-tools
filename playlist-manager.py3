@@ -7,7 +7,7 @@ import paramiko
 import xml.etree.ElementTree as ET
 
 # basic settings relevant to the Pi being used
-hostname = "192.168.1.15"
+hostname = "192.168.1.21"
 user = "pi"
 sshkey = "/home/kwyxz/.ssh/id_rsa_kwyxz_4096b"
 rompath = "/home/pi/roms"
