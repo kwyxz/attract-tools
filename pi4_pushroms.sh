@@ -225,7 +225,7 @@ select_emu() {
 # handle driver-specific cases
 select_driver() {
   case "$2" in
-    cps[23]|neogeo|segas16b)
+    cps[23]|neogeo|raiden2|segas16b)
       # FBNeo mandatory with Pi 4 but better perfs with less overheating
       cd ${FBNEOROMDIR}
       push_emu fbneo "$1"
