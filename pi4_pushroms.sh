@@ -4,6 +4,8 @@
 
 # a few things to set beforehand
 SCRIPTPATH=$(pwd)
+# the extension of the roms
+EXT='7z'
 # the location of the MAME 2003 fullset on the local host
 MAME2k3ROMDIR=$GAMESDIR/mame2003/
 # the location of the Final Burn Neo fullset on the local host
@@ -55,7 +57,7 @@ is_clone() {
 
 # Test if a game is already present on the remote Pi
 is_present() {
-  return $(ssh ${PI4_USER}@${PI4_IP} "test -f ${PI4_ROMPATH}/*/${1}.zip")
+  return $(ssh ${PI4_USER}@${PI4_IP} "test -f ${PI4_ROMPATH}/*/${1}.${EXT}")
 }
 
 # Upload a game to the remote host
@@ -66,13 +68,13 @@ push_game() {
   else
     # Otherwise we upload it to the appropriate folder
     print_green "$1" "$2" "$FULLNAME"
-    if [ -f ${2}.zip ]; then
+    if [ -f ${2}.${EXT} ]; then
       # Unless STAGING=1 is set at runtime, then we're only doing a dry run
       if [ -n "${STAGING+1}" ]; then
         print_yellow "staging" "$2" "not pushing"
       else
         # Push the rom through an SSH tunnel
-        rsync -aq --update -e ssh ${2}.zip ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/${1}/${2}.zip
+        rsync -aq --update -e ssh ${2}.${EXT} ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/${1}/${2}.${EXT}
       fi
     else
       # If the rom is not found, display a message but continue
@@ -80,32 +82,6 @@ push_game() {
     fi
   fi
 }
-
-# This is unnecessary as Final Burn Neo skips CD loadings
-# push_cps3_game() {
-#   # if a NoCD version of the game exists, use it
-#   if [ -f ${FBNEOROMDIR}/${1}n.zip ]; then
-#     # create a temp folder
-#     mkdir -p /tmp/${1}
-#     cd /tmp/${1}
-#     # merge the parent rom with the NoCD one
-#     unzip -qo ${FBNEOROMDIR}/${1}.zip
-#     unzip -qo ${FBNEOROMDIR}/${1}n.zip
-#     zip -qo -9 ${1}n.zip *
-#     # push the resulting zip
-#     push_game fbneo ${1}n
-#     cd /tmp
-#     # delete the temp folder
-#     [[ -d /tmp/${1} ]] && rm -rf /tmp/${1}
-#   # if there is no NoCD version of the game, push the regular rom
-#   elif [ -f ${FBNEOROMDIR}/${1}.zip ]; then
-#     cd ${FBNEOROMDIR}
-#     push_game fbneo ${1}
-#   else
-#     # if the game is not available, skip
-#     print_red "notfound" "$1" "skipping..."
-#   fi
-# }
 
 # merge parent game $1 with correct version $2
 # maybe this could replace the cps3 function in the future
@@ -115,9 +91,9 @@ merge_parent_game() {
     print_yellow "dup" "$2" "${FULLNAME}"
   else
     # not necessary for now since all games are MAME2003, but present in case
-    if [ -f ${MAME2k3ROMDIR}/${1}.zip ]; then
+    if [ -f ${MAME2k3ROMDIR}/${1}.${EXT} ]; then
       EMUROMDIR="mame2003"
-    elif [ -f ${FBNEOROMDIR}/${1}.zip ]; then
+    elif [ -f ${FBNEOROMDIR}/${1}.${EXT} ]; then
       EMUROMDIR="fbneo"
     else
       die "rom files for $1 not found"
@@ -127,13 +103,21 @@ merge_parent_game() {
     cd /tmp/${2}
     # merge the parent rom with the child rom
     echo "Merging $2 into $1"
-    unzip -qo ${GAMESDIR}/${EMUROMDIR}/${1}.zip
-    unzip -qo ${GAMESDIR}/${EMUROMDIR}/${2}.zip
-    zip -qo -9 ${2}.zip *
+    if ${EXT} == 'zip'; then
+      unzip -qo ${GAMESDIR}/${EMUROMDIR}/${1}.${EXT}
+      unzip -qo ${GAMESDIR}/${EMUROMDIR}/${2}.${EXT}
+      zip -qo -9 ${2}.${EXT} *
+    elif ${EXT} == '7z'; then
+      7z x -y ${GAMESDIR}/${EMUROMDIR}/${1}.${EXT} > /dev/null
+      7z x -y ${GAMESDIR}/${EMUROMDIR}/${2}.${EXT} > /dev/null
+      7z a -y ${2}.${EXT} * > /dev/null
+    else
+      die "unknown extension"
+    fi
     # upload the resulting game
     # not using push_game as the alternative name might not be in MAME anymore
     print_green "$EMUROMDIR" "$2" "$FULLNAME"
-    rsync -aq --update -e ssh /tmp/${2}/${2}.zip ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/${EMUROMDIR}/${2}.zip
+    rsync -aq --update -e ssh /tmp/${2}/${2}.${EXT} ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/${EMUROMDIR}/${2}.${EXT}
     cd /tmp
     # remove the temp folder
     [[ -d /tmp/${2} ]] && rm -rf /tmp/${2}
@@ -210,11 +194,11 @@ push_emu() {
 # find out if game will run with MAME 2003 or Final Burn Neo
 select_emu() {
   # default emulator is MAME
-  if [ -f ${MAME2k3ROMDIR}/"$1".zip ]
+  if [ -f ${MAME2k3ROMDIR}/"$1".${EXT} ]
   then
     cd ${MAME2k3ROMDIR}
     push_emu mame2003 "$1"
-  elif [ -f $FBNEOROMDIR/"$1".zip ]
+  elif [ -f $FBNEOROMDIR/"$1".${EXT} ]
   then
     cd ${FBNEOROMDIR}/
     push_emu fbneo "$1"
@@ -244,7 +228,7 @@ select_driver() {
         spidman)
           # a rare case of game renamed between MAME 2003 and modern MAME
           print_green "mame2003" "spidman" "${FULLNAME}"
-          rsync -aq --update -e ssh spidey.zip ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/mame2003/spidey.zip
+          rsync -aq --update -e ssh spidey.${EXT} ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/mame2003/spidey.${EXT}
           ;;
         *)
           select_emu "$1"
