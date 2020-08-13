@@ -29,7 +29,7 @@ def listgames(hostname,user,sshkey,path):
     sshcon.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         sshcon.connect(hostname, username=user, key_filename=sshkey)
-        command = 'cd ' + path + ' && find . -name "*.zip"'
+        command = 'cd ' + path + ' && find . -type f \( -name "*.zip" -o -name "*.7z" \)'
         (stdin, stdout, stderr) = sshcon.exec_command(command)
         for line in stdout.readlines():
             games.append(line.split('\n')[0])
