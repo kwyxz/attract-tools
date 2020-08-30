@@ -90,11 +90,11 @@ merge_parent_game() {
     # If the game is already on the remote host we just skip it
     print_yellow "dup" "$2" "${FULLNAME}"
   else
-    # not necessary for now since all games are MAME2003, but present in case
-    if [ -f ${MAME2k3ROMDIR}/${1}.${EXT} ]; then
-      EMUROMDIR="mame2003"
-    elif [ -f ${FBNEOROMDIR}/${1}.${EXT} ]; then
+    # not necessary for now since all games are FBNeo, but present in case
+    if [ -f ${FBNEOROMDIR}/${1}.${EXT} ]; then
       EMUROMDIR="fbneo"
+    elif [ -f ${MAME2k3ROMDIR}/${1}.${EXT} ]; then
+      EMUROMDIR="mame2003"
     else
       die "rom files for $1 not found"
     fi
@@ -103,11 +103,11 @@ merge_parent_game() {
     cd /tmp/${2}
     # merge the parent rom with the child rom
     echo "Merging $2 into $1"
-    if ${EXT} == 'zip'; then
+    if [ ${EXT} == 'zip' ]; then
       unzip -qo ${GAMESDIR}/${EMUROMDIR}/${1}.${EXT}
       unzip -qo ${GAMESDIR}/${EMUROMDIR}/${2}.${EXT}
       zip -qo -9 ${2}.${EXT} *
-    elif ${EXT} == '7z'; then
+    elif [ ${EXT} == '7z' ]; then
       7z x -y ${GAMESDIR}/${EMUROMDIR}/${1}.${EXT} > /dev/null
       7z x -y ${GAMESDIR}/${EMUROMDIR}/${2}.${EXT} > /dev/null
       7z a -y ${2}.${EXT} * > /dev/null
@@ -128,24 +128,24 @@ merge_parent_game() {
 push_alt_game() {
   case "$2" in
     simpsons)
-      ALTROM="simpsn2p"
+      ALTROM="simpsons2p"
       merge_parent_game ${2} ${ALTROM}
       ;;
     ssriders)
-      ALTROM="ssrdrubc"
+      ALTROM="ssridersubc"
       merge_parent_game ${2} ${ALTROM}
       ;;
     tmnt)
       ALTROM="tmht2p"
-      push_game mame2003 ${ALTROM}
+      push_game fbneo ${ALTROM}
       ;;
     tmnt2)
-      ALTROM="${2}2p"
-      push_game mame2003 ${ALTROM}
+      ALTROM="tmnt22pu"
+      push_game fbneo ${ALTROM}
       ;;
     xmen)
-      ALTROM="${2}2p"
-      push_game mame2003 ${ALTROM}
+      ALTROM="xmen2pu"
+      push_game fbneo ${ALTROM}
       ;;
     esac
     # with Konami games we need to merge
@@ -193,15 +193,15 @@ push_emu() {
 
 # find out if game will run with MAME 2003 or Final Burn Neo
 select_emu() {
-  # default emulator is MAME
-  if [ -f ${MAME2k3ROMDIR}/"$1".${EXT} ]
+  # default emulator is FBNeo
+  if [ -f ${FBNEOROMDIR}/"$1".${EXT} ]
   then
-    cd ${MAME2k3ROMDIR}
-    push_emu mame2003 "$1"
-  elif [ -f $FBNEOROMDIR/"$1".${EXT} ]
-  then
-    cd ${FBNEOROMDIR}/
+    cd ${FBNEOROMDIR}
     push_emu fbneo "$1"
+  elif [ -f $MAME2k3ROMDIR/"$1".${EXT} ]
+  then
+    cd ${MAME2k3ROMDIR}/
+    push_emu mame2003 "$1"
   else print_red "notfound" "$1" "skipping..."
   fi
 }
@@ -209,7 +209,7 @@ select_emu() {
 # handle driver-specific cases
 select_driver() {
   case "$2" in
-    cps[23]|neogeo|raiden2|segas16b|toaplan2)
+    cps[23]|neogeo|raiden2|segaxbd|segas16a|segas16b|toaplan2)
       # FBNeo mandatory with Pi 4 but better perfs with less overheating
       cd ${FBNEOROMDIR}
       push_emu fbneo "$1"

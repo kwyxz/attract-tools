@@ -4,7 +4,9 @@ import datetime
 import os
 from os import path
 import paramiko
-import xml.etree.ElementTree as ET
+import lxml
+from lxml import etree
+# import xml.etree.ElementTree as ET
 
 # basic settings relevant to the Pi being used
 hostname = "192.168.1.21"
@@ -13,6 +15,10 @@ sshkey = "/home/kwyxz/.ssh/id_rsa_kwyxz_4096b"
 rompath = "/home/pi/roms"
 local_playlist = "./Picade.txt"
 remote_playlist = "/home/pi/.attract/romlists/Picade.txt"
+
+# databases
+MAME_DB = './gamelist078.xml'
+FBNEO_DB = './gamelist0223.xml'
 
 # files to ignore if found
 biosfiles = ['neogeo','cpzn1','cpzn2']
@@ -147,32 +153,26 @@ def format_string(publisher,length):
 def open_tree(emu):
     try:
         if emu == "mame2003":
-            with open('./gamelist078.xml') as xml_file_078:
-                tree_078 = ET.parse(xml_file_078)
-                return tree_078
+            tree_mame = etree.parse(MAME_DB)
+            return tree_mame
         elif emu == "fbneo":
-            with open('./gamelist0175.xml') as xml_file_0175:
-                tree_0175 = ET.parse(xml_file_0175)
-                return tree_0175
+             tree_fbneo = etree.parse(FBNEO_DB)
+             return tree_fbneo
         die("unknown emulator")
     except FileNotFoundError:
         die("XML files not present")
 
 # add a line to the playlist
-def add_line(filename):
-    emulator = find_emu(filename)
-    gamename = strip_title(filename)
-    tree = open_tree(emulator)
-    root = tree.getroot()
+def add_line(gamename,emulator,xmlroot):
     with open(local_playlist,"a") as playlist:
         if emulator == "mame2003":
             nodename = "game"
-            print('{:<9} {:<9} \u001b[32m{:<62}\u001b[0m'.format(emulator, gamename,game_meta(gamename,root,nodename,'description')))
-            playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + format_string(game_meta(gamename,root,nodename,'manufacturer'),9) + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'video','orientation') + ";" + game_meta_misc(gamename,root,nodename,'input','control') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'video','screen') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'input','buttons') + '\n')
+            print('{:<9} {:<9} \u001b[32m{:<62}\u001b[0m'.format(emulator, gamename,game_meta(gamename,xmlroot,nodename,'description')))
+            playlist.write(gamename + ";" + game_meta(gamename,xmlroot,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,xmlroot,nodename,'year') + ";" + format_string(game_meta(gamename,xmlroot,nodename,'manufacturer'),9) + ";" + category(gamename) + ";" + game_meta_misc(gamename,xmlroot,nodename,'input','players') + ";" + game_meta_misc(gamename,xmlroot,nodename,'video','orientation') + ";" + game_meta_misc(gamename,xmlroot,nodename,'input','control') + ';' + game_meta_misc(gamename,xmlroot,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,xmlroot,nodename,'video','screen') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,xmlroot,nodename,'input','buttons') + '\n')
         elif emulator == "fbneo":
             nodename = "machine"
-            print('{:<9} {:<9} \u001b[32m{:<62}\u001b[0m'.format(emulator, gamename,game_meta(gamename,root,nodename,'description')))
-            playlist.write(gamename + ";" + game_meta(gamename,root,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,root,nodename,'year') + ";" + format_string(game_meta(gamename,root,nodename,'manufacturer'),9) + ";" + category(gamename) + ";" + game_meta_misc(gamename,root,nodename,'input','players') + ";" + game_meta_misc(gamename,root,nodename,'display','rotate') + ';' + game_meta_misc(gamename,root,nodename,'control','type') + ';' + game_meta_misc(gamename,root,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,root,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,root,nodename,'control','buttons') + '\n')
+            print('{:<9} {:<9} \u001b[32m{:<62}\u001b[0m'.format(emulator, gamename,game_meta(gamename,xmlroot,nodename,'description')))
+            playlist.write(gamename + ";" + game_meta(gamename,xmlroot,nodename,'description') + ";" + prettyprint(emulator) + ";" + ";" + game_meta(gamename,xmlroot,nodename,'year') + ";" + format_string(game_meta(gamename,xmlroot,nodename,'manufacturer'),9) + ";" + category(gamename) + ";" + game_meta_misc(gamename,xmlroot,nodename,'input','players') + ";" + game_meta_misc(gamename,xmlroot,nodename,'display','rotate') + ';' + game_meta_misc(gamename,xmlroot,nodename,'control','type') + ';' + game_meta_misc(gamename,xmlroot,nodename,'driver','status') + ';1;' + game_meta_misc(gamename,xmlroot,nodename,'display','type') + ';' + ';' + ';' + ';' + game_meta_misc(gamename,xmlroot,nodename,'control','buttons') + '\n')
 
 # count the amount of games in the playlist
 def count_games(fname):
@@ -184,13 +184,20 @@ def count_games(fname):
 # main loop
 added = 0
 roms = listgames(hostname,user,sshkey,rompath)
+last_emu = ''
 if path.exists(local_playlist):
     print("Local playlist found, updating local playlist")
 else:
     retrievepl(hostname,user,sshkey,remote_playlist)
 for rom in roms:
     if not is_present(strip_title(rom),local_playlist):
-        add_line(rom)
+        emu = find_emu(rom)
+        game = strip_title(rom)
+        if emu != last_emu:
+            tree = open_tree(emu)
+            root = tree.getroot()
+            last_emu = emu
+        add_line(game,emu,root)
         added += 1
 print("The local playlist is up-to-date")
 pushpl(hostname,user,sshkey,local_playlist,remote_playlist)
