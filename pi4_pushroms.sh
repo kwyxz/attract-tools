@@ -106,18 +106,18 @@ merge_parent_game() {
     if [ ${EXT} == 'zip' ]; then
       unzip -qo ${GAMESDIR}/${EMUROMDIR}/${1}.${EXT}
       unzip -qo ${GAMESDIR}/${EMUROMDIR}/${2}.${EXT}
-      zip -qo -9 ${2}.${EXT} *
+      zip -qo -9 ${1}.${EXT} *
     elif [ ${EXT} == '7z' ]; then
       7z x -y ${GAMESDIR}/${EMUROMDIR}/${1}.${EXT} > /dev/null
       7z x -y ${GAMESDIR}/${EMUROMDIR}/${2}.${EXT} > /dev/null
-      7z a -y ${2}.${EXT} * > /dev/null
+      7z a -y ${1}.${EXT} * > /dev/null
     else
       die "unknown extension"
     fi
     # upload the resulting game
     # not using push_game as the alternative name might not be in MAME anymore
     print_green "$EMUROMDIR" "$2" "$FULLNAME"
-    rsync -aq --update -e ssh /tmp/${2}/${2}.${EXT} ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/${EMUROMDIR}/${2}.${EXT}
+    rsync -aq --update -e ssh /tmp/${2}/${1}.${EXT} ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/${EMUROMDIR}/${1}.${EXT}
     cd /tmp
     # remove the temp folder
     [[ -d /tmp/${2} ]] && rm -rf /tmp/${2}
@@ -137,15 +137,15 @@ push_alt_game() {
       ;;
     tmnt)
       ALTROM="tmht2p"
-      push_game fbneo ${ALTROM}
+      merge_parent_game ${2} ${ALTROM}
       ;;
     tmnt2)
       ALTROM="tmnt22pu"
-      push_game fbneo ${ALTROM}
+      merge_parent_game ${2} ${ALTROM}
       ;;
     xmen)
       ALTROM="xmen2pu"
-      push_game fbneo ${ALTROM}
+      merge_parent_game ${2} ${ALTROM}
       ;;
     esac
     # with Konami games we need to merge
