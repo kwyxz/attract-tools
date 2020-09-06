@@ -6,6 +6,8 @@
 SCRIPTPATH=$(pwd)
 # the extension of the roms
 EXT='7z'
+# the location of the MAME (current) fullset
+MAMEROMDIR=$GAMESDIR/mame/
 # the location of the MAME 2003 fullset on the local host
 MAME2k3ROMDIR=$GAMESDIR/mame2003/
 # the location of the Final Burn Neo fullset on the local host
@@ -164,6 +166,9 @@ push_emu() {
     ${CONVERSION})
       print_yellow "convert" "$2" "${FULLNAME}"
       ;;
+    ${GUN})
+      print_yellow "lightgun" "$2" "${FULLNAME}"
+      ;;
     ${KOREA})
       print_yellow "korea" "$2" "${FULLNAME}"
       ;;
@@ -209,6 +214,10 @@ select_emu() {
 # handle driver-specific cases
 select_driver() {
   case "$2" in
+    model1|model2)
+      cd ${MAMEROMDIR}
+      push_emu mame "$1"
+      ;;
     cps[23]|neogeo|raiden2|segaxbd|segas16a|segas16b|toaplan2)
       # FBNeo mandatory with Pi 4 but better perfs with less overheating
       cd ${FBNEOROMDIR}
