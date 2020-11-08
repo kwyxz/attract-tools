@@ -166,6 +166,9 @@ push_emu() {
     ${CONVERSION})
       print_yellow "convert" "$2" "${FULLNAME}"
       ;;
+    ${FISHING})
+      print_yellow "fishing" "$2" "${FULLNAME}"
+      ;;
     ${GUN})
       print_yellow "lightgun" "$2" "${FULLNAME}"
       ;;
@@ -177,6 +180,9 @@ push_emu() {
       ;;
     ${MATURE})
       print_yellow "mature" "$2" "${FULLNAME}"
+      ;;
+    ${PURIKURA})
+      print_yellow "purikura" "$2" "${FULLNAME}"
       ;;
     ${PROTOTYPE})
       print_yellow "prototype" "$2" "${FULLNAME}"
@@ -214,7 +220,7 @@ select_emu() {
 # handle driver-specific cases
 select_driver() {
   case "$2" in
-    model1|model2)
+    model1|model2|stv|segabill)
       cd ${MAMEROMDIR}
       push_emu mame "$1"
       ;;
@@ -246,7 +252,7 @@ select_driver() {
       ;;
     # blacklisted drivers
     # some could be whitelisted for Pi4
-    namcos11|stv|jalmah|mahjong|royalmah)
+    namcos11|jalmah|mahjong|royalmah)
       print_red "denied" "$1" "driver not allowed"
       ;;
     *)
