@@ -5,7 +5,7 @@
 # a few things to set beforehand
 SCRIPTPATH=$(pwd)
 # the extension of the roms
-EXT='7z'
+EXT='zip'
 # the location of the MAME (current) fullset
 MAMEROMDIR=$GAMESDIR/mame/
 # the location of the MAME 2003 fullset on the local host
@@ -69,8 +69,8 @@ push_game() {
     print_yellow "dup" "$2" "${FULLNAME}"
   else
     # Otherwise we upload it to the appropriate folder
-    print_green "$1" "$2" "$FULLNAME"
     if [ -f ${2}.${EXT} ]; then
+      print_green "$1" "$2" "$FULLNAME"
       # Unless STAGING=1 is set at runtime, then we're only doing a dry run
       if [ -n "${STAGING+1}" ]; then
         print_yellow "staging" "$2" "not pushing"
