@@ -12,10 +12,12 @@ MAMEROMDIR=$GAMESDIR/mame/
 MAME2k3ROMDIR=$GAMESDIR/mame2003/
 # the location of the Final Burn Neo fullset on the local host
 FBNEOROMDIR=$GAMESDIR/fbneo/
-# the command that will be run ton establish what games are clones
-CLONES=$($MAMEBIN -listclones | awk '{print $1}' | sort | uniq)
-# the complete list of games, it saves time and RAM to just create a flat file
-$MAMEBIN -listfull | sort > ${SCRIPTPATH}/LISTFULL
+# the complete list of games
+$MAMEBIN -listfull | sort | uniq > ${SCRIPTPATH}/LISTFULL
+# the complete list of clones only
+$MAMEBIN -listclones | awk '{print $1}' | sort | uniq > ${SCRIPTPATH}/LISTCLONES
+# the complete list of drivers
+$MAMEBIN -listsource | sort | uniq > ${SCRIPTPATH}/LISTSOURCE
 
 # Print things in beautiful colors
 # This is the generic formatting function
@@ -54,7 +56,7 @@ die() {
 
 # Test if a game is present in the clone list
 is_clone() {
-  return $(echo ${CLONES} | grep -q -w ${1})
+  return $(grep -q -w -e "^${1}" ${SCRIPTPATH}/LISTCLONES)
 }
 
 # Test if a game is already present on the remote Pi
@@ -70,11 +72,11 @@ push_game() {
   else
     # Otherwise we upload it to the appropriate folder
     if [ -f ${2}.${EXT} ]; then
-      print_green "$1" "$2" "$FULLNAME"
       # Unless STAGING=1 is set at runtime, then we're only doing a dry run
       if [ -n "${STAGING+1}" ]; then
         print_yellow "staging" "$2" "not pushing"
       else
+        print_green "$1" "$2" "$FULLNAME"
         # Push the rom through an SSH tunnel
         rsync -aq --update -e ssh ${2}.${EXT} ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/${1}/${2}.${EXT}
       fi
@@ -278,17 +280,17 @@ do
     # find which driver this is, using current version of MAME
     # we *really* don't want to parse XML files
     # this should be replaced by a flat file though
-    DRIVER=$(${MAMEBIN} -listsource $1 | awk '{print $2}' | cut -d '.' -f 1)
+    DRIVER=$(grep -w -e "^${1}" ${SCRIPTPATH}/LISTSOURCE | awk '{print $2}' | cut -d '.' -f 1)
     print_blue "Emulator" "Rom" "Driver: ${DRIVER}"
     # push games running on the same driver
     # this helps discovering lesser-known games that are probably of interest
-    for GAME in $(${MAMEBIN} -listsource | grep -w $(echo ${DRIVER}.cpp) | awk '{print $1}')
+    for GAME in $(grep -w "${DRIVER}.cpp" ${SCRIPTPATH}/LISTSOURCE | awk '{print $1}')
     do
       # avoid clones, we only want originals
       if ! is_clone ${GAME}
       then
         # get the game's fullname from MAME
-        FULLNAME=$(grep -w "${GAME}" ${SCRIPTPATH}/LISTFULL | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
+        FULLNAME=$(grep -w -e "^${GAME}" ${SCRIPTPATH}/LISTFULL | cut -d '"' -f 2 | tr '/' '_' | sed 's/\ \~\ /\)\(/')
         select_driver ${GAME} ${DRIVER}
       fi
     done
@@ -296,5 +298,5 @@ do
   shift
 done
 
-rm -f ${SCRIPTPATH}/LISTFULL
+rm -f ${SCRIPTPATH}/LISTFULL ${SCRIPTPATH}/LISTSOURCE ${SCRIPTPATH}/LISTCLONES
 exit 0
