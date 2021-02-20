@@ -19,9 +19,9 @@ shopt -s extglob
 # Bootlegs
 BOOTLEG='+(39in1|aladmdb|backfirt|barek3mb|black|bldyr3b|brod|chry10|cpokerpk|cps3boot|crswd2bl|denseib|empcity|endless|ffight2b|froman2b|fspiderb|gmgalax|igromult|iron|janputer|jparkmb|kbash2|kinstb|kok|lasthope|legendsb|lucky74|m4tupen|mjreach|mk3mdb|mk3snes|moguchan|mstworld|pengadvb|pesadelo|protennb|rushbets|sblast2b|shinfz|slotunbl|smssgame|smssgamea|sonic2mb|srmdb|ssf2mdb|tetrbx|tetriskr|tourvis|twinktmb|venom|zigzagb|zintrckb|bootleg_sys16a_sprite|seibu_cop_boot|neocart_matrimbl|neocart_kof10th|neocart_kof2002b|neocart_kf2k3bl|neocart_boot|neocart_garoubl|neocart_kof97oro|neocart_kf10thep|neocart_kf2k5uni|neocart_kf2k4se|neocart_lans2004|neocart_samsho5b|neocart_mslug3b6|neocart_ms5plus|neocart_kog|neocart_svcboot|neocart_svcplus|neocart_svcplusa|neocart_svcsplus|ng_cthd_prot|ng_kof2k3bl_prot|ngboot_prot|nes_mbaby|nes_asn)'
 # Conversions (some of them are good games though)
-CONVERSION='+(8ballact|dariusgx|drakton|drivfrcp|fantastc|fastdrwp|kong|lasthope|megadpkr|moonal2|reaktor|spcwarp|superbon|timefgtr|v4dealem|zigzagb)'
+CONVERSION='+(8ballact|dariusgx|drakton|drivfrcp|fantastc|fastdrwp|gradiusb|kong|lasthope|megadpkr|moonal2|reaktor|spcwarp|superbon|timefgtr|twinbeeb|v4dealem|zigzagb)'
 # Korean bootlegs
-KOREA='+(atomicp|hexa|jpopnics|snapper|tetrsark)'
+KOREA='+(atomicp|bongo|hexa|jpopnics|mimonkey|ozon1|snapper|tetrsark)'
 # Fishing
 FISHING='+(seabass|sfish2)'
 # Gun games
