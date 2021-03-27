@@ -18,7 +18,7 @@ remote_playlist = "/home/pi/.attract/romlists/Picade.txt"
 
 # databases
 MAME_DB = './gamelist078.xml'
-FBNEO_DB = './gamelist0223.xml'
+FBNEO_DB = './gamelist0229.xml'
 
 # files to ignore if found
 biosfiles = ['neogeo','cpzn1','cpzn2','konamigx']
