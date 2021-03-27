@@ -240,18 +240,6 @@ select_driver() {
       cd ${MAME2k3ROMDIR}
       push_emu mame2003 "$1"
       ;;
-    segas32)
-      case "$1" in
-        spidman)
-          # a rare case of game renamed between MAME 2003 and modern MAME
-          print_green "mame2003" "spidman" "${FULLNAME}"
-          rsync -aq --update -e ssh spidey.${EXT} ${PI4_USER}@${PI4_IP}:${PI4_ROMPATH}/mame2003/spidey.${EXT}
-          ;;
-        *)
-          select_emu "$1"
-          ;;
-      esac
-      ;;
     # blacklisted drivers
     # some could be whitelisted for Pi4
     namcos11|jalmah|mahjong|royalmah)
