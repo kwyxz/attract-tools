@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-. settings
+. ./settings
 
 for fich in $(ssh pi4 "ls -1 /home/pi/roms/mame2003")
 do
