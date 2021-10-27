@@ -23,7 +23,7 @@ MAME_DB = './gamelist078.xml'
 FBNEO_DB = './gamelist0229.xml'
 
 # files to ignore if found
-biosfiles = ['neogeo','cpzn1','cpzn2','konamigx']
+biosfiles = ['neogeo','cpzn1','cpzn2','konamigx','skns']
 
 # in case of any error
 def die(message):
