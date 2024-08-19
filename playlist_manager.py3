@@ -11,7 +11,7 @@ import paramiko
 from lxml import etree
 
 # basic settings relevant to the Pi being used
-HOSTNAME = "192.168.1.21"
+HOSTNAME = "192.168.0.9"
 USER = "pi"
 SSHKEY = "/home/kwyxz/.ssh/id_rsa_kwyxz_4096b"
 ROMPATH = "/home/pi/roms"
