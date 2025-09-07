@@ -12,11 +12,11 @@ from lxml import etree
 
 # basic settings relevant to the Pi being used
 HOSTNAME = "192.168.0.9"
-USER = "pi"
-SSHKEY = "/home/kwyxz/.ssh/id_rsa_kwyxz_4096b"
-ROMPATH = "/home/pi/roms"
+USER = "kwyxz"
+SSHKEY = f"/home/{USER}/.ssh/id_rsa_kwyxz_4096b"
+ROMPATH = f"/home/{USER}/roms"
 LOCAL_PLAYLIST = "./Picade.txt"
-REMOTE_PLAYLIST = "/home/pi/.attract/romlists/Picade.txt"
+REMOTE_PLAYLIST = f"/home/{USER}/.attract/romlists/Picade.txt"
 
 # databases
 MAME_DB = './gamelist078.xml'

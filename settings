@@ -5,9 +5,9 @@ PI3_USER=pi
 PI3_IP=192.168.1.15
 PI3_ROMPATH=/home/pi/roms
 
-PI4_USER=pi
-PI4_IP=192.168.1.21
-PI4_ROMPATH=/home/pi/roms
+PI4_USER=kwyxz
+PI4_IP=192.168.0.9
+PI4_ROMPATH=/home/kwyxz/roms
 
 # Local paths
 GAMESDIR=/mnt/space/Games/
